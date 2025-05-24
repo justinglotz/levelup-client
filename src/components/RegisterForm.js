@@ -15,6 +15,7 @@ function RegisterForm({ user, updateUser }) {
     registerUser(formData).then(() => updateUser(user.uid));
   };
 
+  console.log('User object:', user);
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group className="mb-3" controlId="formBasicEmail">

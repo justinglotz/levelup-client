@@ -30,22 +30,20 @@ function AuthProvider(props) {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((fbUser) => {
       if (fbUser) {
-        setUser(fbUser);
-        setOAuthUser(fbUser);
         checkUser(fbUser.uid).then((gamerInfo) => {
-          let userObj = {};
-          if ('valid' in gamerInfo) {
-            userObj = gamerInfo;
+          if (gamerInfo.valid === false) {
+            // User not registered, but keep Firebase uid for registration
+            setUser({ ...gamerInfo, uid: fbUser.uid });
           } else {
-            userObj = { fbUser, uid: fbUser.uid, ...gamerInfo };
+            setUser({ ...gamerInfo, uid: fbUser.uid });
           }
-          setUser(userObj);
         });
+        setOAuthUser(fbUser);
       } else {
-        setOAuthUser(false);
         setUser(false);
+        setOAuthUser(false);
       }
-    }); // creates a single global listener for auth state changed
+    });
   }, []);
 
   const value = useMemo(
