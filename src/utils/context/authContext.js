@@ -33,9 +33,9 @@ function AuthProvider(props) {
         checkUser(fbUser.uid).then((gamerInfo) => {
           if (gamerInfo.valid === false) {
             // User not registered, but keep Firebase uid for registration
-            setUser({ ...gamerInfo, uid: fbUser.uid });
+            setUser({ fbUser, uid: fbUser.uid, ...gamerInfo });
           } else {
-            setUser({ ...gamerInfo, uid: fbUser.uid });
+            setUser({ fbUser, uid: fbUser.uid, ...gamerInfo });
           }
         });
         setOAuthUser(fbUser);
