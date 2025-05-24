@@ -30,18 +30,15 @@ function AuthProvider(props) {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((fbUser) => {
       if (fbUser) {
-        checkUser(fbUser.uid).then((gamerInfo) => {
-          if (gamerInfo.valid === false) {
-            // User not registered, but keep Firebase uid for registration
-            setUser({ fbUser, uid: fbUser.uid, ...gamerInfo });
-          } else {
-            setUser({ fbUser, uid: fbUser.uid, ...gamerInfo });
-          }
-        });
         setOAuthUser(fbUser);
+        checkUser(fbUser.uid).then((gamerInfo) => {
+          let userObj = {};
+          userObj = { fbUser, uid: fbUser.uid, ...gamerInfo };
+          setUser(userObj);
+        });
       } else {
-        setUser(false);
         setOAuthUser(false);
+        setUser(false);
       }
     });
   }, []);
