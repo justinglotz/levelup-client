@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { createGame, getGameTypes } from '@/utils/data/gameData';
+import { updateGame, getGameTypes } from '@/utils/data/gameData';
 
 const initialState = {
   skillLevel: 1,
@@ -14,7 +14,7 @@ const initialState = {
   gameTypeId: 0,
 };
 
-function GameForm({ user }) {
+function UpdateGameForm({ game }) {
   const [gameTypes, setGameTypes] = useState([]);
   /*
   Since the input fields are bound to the values of
@@ -28,6 +28,20 @@ function GameForm({ user }) {
     getGameTypes().then((data) => setGameTypes(data));
   }, []);
 
+  useEffect(() => {
+    if (game) {
+      setCurrentGame({
+        title: game.title || '',
+        maker: game.maker || '',
+        numberOfPlayers: game.number_of_players,
+        skillLevel: game.skill_level,
+        gamerId: game.gamer?.id,
+        gameTypeId: game.game_type?.id,
+        id: game.id,
+      });
+    }
+  }, [game]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCurrentGame((prevState) => ({
@@ -36,26 +50,27 @@ function GameForm({ user }) {
     }));
     console.log('name:', name);
     console.log('value:', value);
-    console.log(currentGame);
+    console.log('current game:', currentGame);
   };
 
+  console.log('game', game);
   const handleSubmit = (e) => {
     // Prevent form from being submitted
     e.preventDefault();
 
-    const game = {
+    const updatedGame = {
       maker: currentGame.maker,
       title: currentGame.title,
       numberOfPlayers: Number(currentGame.numberOfPlayers),
       skillLevel: Number(currentGame.skillLevel),
       gameType: Number(currentGame.gameTypeId),
-      userId: user.uid,
+      id: currentGame.id,
     };
 
-    console.log('Form submitted:', game);
+    console.log('game being sent for update:', game);
 
-    // Send POST request to your API
-    createGame(game).then(() => router.push('/games'));
+    // Send PUT request to your API
+    updateGame(updatedGame).then(() => router.push('/games'));
   };
 
   return (
@@ -78,7 +93,7 @@ function GameForm({ user }) {
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Game Type</Form.Label>
-        <Form.Select name="gameTypeId" aria-label="Default select example" onChange={handleChange}>
+        <Form.Select name="gameTypeId" aria-label="Default select example" value={currentGame.gameTypeId} onChange={handleChange}>
           <option>Select a Game Type...</option>
           {gameTypes.map((gameType) => (
             <option value={gameType.id}>{gameType.label}</option>
@@ -93,10 +108,19 @@ function GameForm({ user }) {
   );
 }
 
-GameForm.propTypes = {
+UpdateGameForm.propTypes = {
   user: PropTypes.shape({
     uid: PropTypes.string.isRequired,
   }).isRequired,
+  game: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    maker: PropTypes.string.isRequired,
+    number_of_players: PropTypes.number.isRequired,
+    skill_level: PropTypes.number.isRequired,
+    gamer: PropTypes.number.isRequired,
+    game_type: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
+  }),
 };
 
-export default GameForm;
+export default UpdateGameForm;

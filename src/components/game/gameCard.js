@@ -1,21 +1,31 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
+import { useRouter } from 'next/navigation';
 
 function GameCard({
   title, //
   maker,
   numberOfPlayers,
   skillLevel,
+  gameId,
 }) {
-  return <Card className="text-center">
-    <Card.Header>{title}</Card.Header>
-    <Card.Body>
-      <Card.Title>By: {maker}</Card.Title>
-      <Card.Text>{numberOfPlayers} players needed</Card.Text>
-    </Card.Body>
-    <Card.Footer className="text-muted">Skill Level: {skillLevel}</Card.Footer>
-  </Card>
+  const router = useRouter();
+
+  const handleEdit = () => {
+    router.push(`/games/edit/${gameId}`);
+  };
+  return (
+    <Card className="text-center">
+      <Card.Header>{title}</Card.Header>
+      <Card.Body>
+        <Card.Title>By: {maker}</Card.Title>
+        <Card.Text>{numberOfPlayers} players needed</Card.Text>
+        <Button onClick={handleEdit}>Edit</Button>
+      </Card.Body>
+      <Card.Footer className="text-muted">Skill Level: {skillLevel}</Card.Footer>
+    </Card>
+  );
 }
 
 GameCard.propTypes = {
@@ -23,6 +33,7 @@ GameCard.propTypes = {
   maker: PropTypes.string.isRequired,
   numberOfPlayers: PropTypes.number.isRequired,
   skillLevel: PropTypes.number.isRequired,
+  gameId: PropTypes.number.isRequired,
 };
 
 export default GameCard;
