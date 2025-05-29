@@ -55,5 +55,17 @@ const getSingleGame = (gameId) =>
       .then((data) => resolve(data))
       .catch(reject);
   });
+
+const deleteGame = (gameId) =>
+  new Promise((resolve, reject) => {
+    fetch(`${clientCredentials.databaseURL}/games/${gameId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => resolve(response))
+      .catch(reject);
+  });
 // eslint-disable-next-line import/prefer-default-export
-export { getGames, createGame, getGameTypes, updateGame, getSingleGame };
+export { getGames, createGame, getGameTypes, updateGame, getSingleGame, deleteGame };
