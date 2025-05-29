@@ -47,5 +47,18 @@ const getSingleEvent = (eventId) =>
       .then((data) => resolve(data))
       .catch(reject);
   });
+
+const deleteEvent = (eventId) =>
+  new Promise((resolve, reject) => {
+    fetch(`${clientCredentials.databaseURL}/events/${eventId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => resolve(response))
+      .catch(reject);
+  });
+
 // eslint-disable-next-line import/prefer-default-export
-export { getEvents, createEvent, updateEvent, getSingleEvent };
+export { getEvents, createEvent, updateEvent, getSingleEvent, deleteEvent };
