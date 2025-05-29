@@ -19,7 +19,6 @@ function UpdateEventForm({ event }) {
 
   useEffect(() => {
     getGames().then((data) => setGames(data));
-    console.log(currentEvent);
   }, [currentEvent]);
 
   useEffect(() => {
@@ -56,7 +55,7 @@ function UpdateEventForm({ event }) {
       organizer: currentEvent.organizer.id,
     };
     console.log('Updated event:', updatedEvent);
-    // Send POST request to your API
+    // Send PUT request to your API
     updateEvent(updatedEvent).then(() => router.push('/events'));
   };
 

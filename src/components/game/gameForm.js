@@ -29,7 +29,6 @@ function GameForm({ user }) {
   }, []);
 
   const handleChange = (e) => {
-    // TODO: Complete the onChange function
     const { name, value } = e.target;
     setCurrentGame((prevState) => ({
       ...prevState,
