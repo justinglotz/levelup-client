@@ -1,8 +1,13 @@
 import { clientCredentials } from '../client';
 
-const getEvents = () =>
+const getEvents = (uid) =>
+  // eslint-disable-next-line no-new
   new Promise((resolve, reject) => {
-    fetch(`${clientCredentials.databaseURL}/events`)
+    fetch(`${clientCredentials.databaseURL}/events`, {
+      headers: {
+        Authorization: uid,
+      },
+    })
       .then((response) => response.json())
       .then(resolve)
       .catch(reject);
@@ -60,5 +65,33 @@ const deleteEvent = (eventId) =>
       .catch(reject);
   });
 
+const leaveEvent = (eventId, uid, setEvents) => {
+  // Make a delete request deleting user and event relationship in database IN EVENTGAMER
+  // Backend will read through the rows of the table and give back a true or false for whether the user has joined the event or not
+  fetch(`${clientCredentials.databaseURL}/events/${eventId}/leave`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: uid,
+    },
+    body: JSON.stringify({}),
+  })
+    .then(() => getEvents(uid))
+    .then(setEvents);
+};
+
+const joinEvent = (eventId, uid, setEvents) => {
+  // Make a post request to add the user and event relationship in the database
+  fetch(`${clientCredentials.databaseURL}/events/${eventId}/signup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: uid,
+    },
+    body: JSON.stringify({}),
+  })
+    .then(() => getEvents(uid))
+    .then(setEvents);
+};
 // eslint-disable-next-line import/prefer-default-export
-export { getEvents, createEvent, updateEvent, getSingleEvent, deleteEvent };
+export { getEvents, createEvent, updateEvent, getSingleEvent, deleteEvent, joinEvent, leaveEvent };
