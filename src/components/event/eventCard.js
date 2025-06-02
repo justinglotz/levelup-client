@@ -2,10 +2,12 @@ import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { deleteEvent } from '../../utils/data/eventData';
+import { deleteEvent, joinEvent, leaveEvent } from '../../utils/data/eventData';
+import { useAuth } from '../../utils/context/authContext';
 
-function EventCard({ description, date, time, gameTitle, eventId, onDelete }) {
+function EventCard({ description, date, time, gameTitle, eventId, onDelete, joined, setEvents }) {
   const router = useRouter();
+  const { user } = useAuth();
 
   const handleEdit = () => {
     router.push(`/events/edit/${eventId}`);
@@ -15,6 +17,14 @@ function EventCard({ description, date, time, gameTitle, eventId, onDelete }) {
     deleteEvent(eventId).then(onDelete);
   };
 
+  const handleJoin = () => {
+    joinEvent(eventId, user.uid, setEvents);
+  };
+
+  const handleLeave = () => {
+    leaveEvent(eventId, user.uid, setEvents);
+  };
+
   return (
     <Card className="text-center">
       <Card.Header>{description}</Card.Header>
@@ -22,7 +32,18 @@ function EventCard({ description, date, time, gameTitle, eventId, onDelete }) {
         <Card.Text>Date: {date}</Card.Text>
         <Card.Text>Time: {time}</Card.Text>
         <Card.Text>Game Title: {gameTitle}</Card.Text>
-        <Button onClick={handleEdit}>Edit</Button>
+        <Button onClick={handleEdit} className="mx-2">
+          Edit
+        </Button>
+        {joined ? (
+          <Button onClick={handleLeave} variant="warning">
+            Leave
+          </Button>
+        ) : (
+          <Button onClick={handleJoin} variant="success">
+            Join
+          </Button>
+        )}
         <Button className="mx-2" onClick={handleDelete}>
           Delete
         </Button>
@@ -38,6 +59,8 @@ EventCard.propTypes = {
   gameTitle: PropTypes.string.isRequired,
   eventId: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
+  joined: PropTypes.bool.isRequired,
+  setEvents: PropTypes.func.isRequired,
 };
 
 export default EventCard;
